@@ -4,6 +4,7 @@ import entity.User;
 import entity.UserFactory;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.clear_users.ClearUserDataAccessInterface;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface, ClearUserDataAccessInterface{
 
     private final File csvFile;
 
@@ -64,6 +65,12 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         return accounts.get(username);
     }
 
+    @Override
+    public void delete(){
+        accounts.clear();
+        this.save();
+    }
+
     private void save() {
         BufferedWriter writer;
         try {
@@ -84,7 +91,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      * Return whether a user exists with username identifier.
