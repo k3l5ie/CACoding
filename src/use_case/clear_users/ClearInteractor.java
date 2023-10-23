@@ -1,8 +1,7 @@
 package use_case.clear_users;
 
-import entity.User;
-
-// TODO Complete me
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClearInteractor implements ClearInputBoundary{
 
@@ -10,22 +9,18 @@ public class ClearInteractor implements ClearInputBoundary{
 
     final ClearOutputBoundary clearPresenter;
 
-    //my todo check if userFactory is needed...
-
     public ClearInteractor(ClearUserDataAccessInterface clearUserDataAccessInterface,
                            ClearOutputBoundary clearOutputBoundary){
         this.userDataAccessObject = clearUserDataAccessInterface;
         this.clearPresenter = clearOutputBoundary;
     }
 
-    // my todo, complete this...
-    // doesn't take in input data
     @Override
     public void execute(){
+        List<String> users = userDataAccessObject.getUsers();
+        userDataAccessObject.delete();
 
-        User user = userDataAccessObject.get();
-
-        ClearOutputData clearOutputData = new ClearOutputData();
+        ClearOutputData clearOutputData = new ClearOutputData(users, false);
         clearPresenter.prepareSuccessView(clearOutputData);
     }
 }

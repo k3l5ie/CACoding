@@ -38,8 +38,7 @@ public class SignupUseCaseFactory {
 
         try {
             SignupController signupController = createUserSignupUseCase(viewManagerModel, signupViewModel, loginViewModel, userDataAccessObject);
-            // my TODO update constructor if needed...
-            ClearController clearController = createClearUserUseCase(viewManagerModel, clearViewModel, clearUserDataAccessInterface);
+            ClearController clearController = createClearUserUseCase(viewManagerModel, clearViewModel, signupViewModel, clearUserDataAccessInterface);
             return new SignupView(signupController, signupViewModel, clearController, clearViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
@@ -61,16 +60,15 @@ public class SignupUseCaseFactory {
         return new SignupController(userSignupInteractor);
     }
 
-
-    // my TODO complete later ...
     private static ClearController createClearUserUseCase(
             ViewManagerModel viewManagerModel,
             ClearViewModel clearViewModel,
-            ClearUserDataAccessInterface clearUserDataAccessInterface) throws IOException {
+            SignupViewModel signupViewModel,
+            ClearUserDataAccessInterface clearUserDataAccessObject) throws IOException {
 
-        ClearOutputBoundary clearOutputBoundary = new ClearPresenter(viewManagerModel, clearViewModel);
+        ClearOutputBoundary clearOutputBoundary = new ClearPresenter(viewManagerModel, clearViewModel, signupViewModel);
 
-        ClearInputBoundary clearInteractor = new ClearInteractor(userDataAccessObject, clearOutputBoundary);
+        ClearInputBoundary clearInteractor = new ClearInteractor(clearUserDataAccessObject, clearOutputBoundary);
 
         return new ClearController(clearInteractor);
     }

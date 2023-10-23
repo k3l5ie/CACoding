@@ -15,29 +15,37 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class SignupView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
+    private final ClearViewModel clearViewModel;
     private final JTextField usernameInputField = new JTextField(15);
     private final JPasswordField passwordInputField = new JPasswordField(15);
     private final JPasswordField repeatPasswordInputField = new JPasswordField(15);
     private final SignupController signupController;
 
-    //private final ClearController clearController;
+    private final ClearController clearController;
 
     private final JButton signUp;
     private final JButton cancel;
 
+    private String clearedUsers;
+
     // TODO Note: this is the new JButton for clearing the users file
     private final JButton clear;
 
-    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
+    public SignupView(SignupController controller, SignupViewModel signupViewModel,
+                      ClearController clearController, ClearViewModel clearViewModel) {
 
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.clearController = clearController;
+        this.clearViewModel = clearViewModel;
         signupViewModel.addPropertyChangeListener(this);
+        clearViewModel.addPropertyChangeListener(this);
 
         JLabel title = new JLabel(SignupViewModel.TITLE_LABEL);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -86,7 +94,16 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (e.getSource().equals(clear)){
-                            clearController
+                            ClearState currentstate = clearViewModel.getState();
+                            clearController.execute();
+
+                            List<String> deletedUsers = clearViewModel.getState().getUsers();
+
+                            StringBuilder clearusers = new StringBuilder();
+                            for (String user: deletedUsers){
+                                clearusers.append(user).append("\n");
+                            }
+                            clearedUsers = clearusers.toString();
                         }
                     }
                 }
@@ -178,8 +195,12 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         SignupState state = (SignupState) evt.getNewValue();
+        ClearState clearState = (ClearState) evt.getNewValue();
         if (state.getUsernameError() != null) {
             JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
+        if (clearState.getUsers() != null){
+            JOptionPane.showMessageDialog(this, clearedUsers);
         }
     }
 }
