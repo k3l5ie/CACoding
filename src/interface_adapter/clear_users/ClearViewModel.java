@@ -14,7 +14,7 @@ public class ClearViewModel extends ViewModel{
     private ClearState state = new ClearState();
 
     public ClearViewModel(){
-        super("clear");
+        super("sign up");
     }
     public void setState(ClearState state){
         this.state = state;

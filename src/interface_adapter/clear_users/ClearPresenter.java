@@ -36,8 +36,4 @@ public class ClearPresenter implements ClearOutputBoundary{
         this.viewManagerModel.firePropertyChanged();
     }
 
-    @Override
-    public void prepareFailView(String error) {
-
-    }
 }

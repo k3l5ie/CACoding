@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SignupView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -97,13 +98,13 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                             ClearState currentstate = clearViewModel.getState();
                             clearController.execute();
 
-                            List<String> deletedUsers = clearViewModel.getState().getUsers();
+                            ArrayList<String> deletedUsers = clearViewModel.getState().getUsers();
 
-                            StringBuilder clearusers = new StringBuilder();
-                            for (String user: deletedUsers){
-                                clearusers.append(user).append("\n");
+                            clearedUsers = "";
+                            for (String user: deletedUsers) {
+                                clearedUsers += user + ",";
                             }
-                            clearedUsers = clearusers.toString();
+                            clearViewModel.firePropertyChanged();
                         }
                     }
                 }
@@ -194,15 +195,15 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName() == "state") {
+        if (evt.getPropertyName() == "clearState") {
+            ClearState clearState = (ClearState) evt.getNewValue();
+            if (clearedUsers != null) {
+                JOptionPane.showMessageDialog(this, clearedUsers);
+            }
+        } else if (evt.getPropertyName() == "state") {
             SignupState state = (SignupState) evt.getNewValue();
             if (state.getUsernameError() != null) {
                 JOptionPane.showMessageDialog(this, state.getUsernameError());
-            }
-        } else if (evt.getPropertyName() == "clearState"){
-            ClearState clearState = (ClearState) evt.getNewValue();
-            if (clearState.getUsers() != null) {
-                JOptionPane.showMessageDialog(this, clearedUsers);
             }
         }
     }
